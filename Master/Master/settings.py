@@ -144,4 +144,7 @@ STATIC_URL = '/static/'
 # Add this line to specify where to look for static files
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'api/static'),
+    os.path.join(BASE_DIR, 'static')
 ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
