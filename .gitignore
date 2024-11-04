@@ -1,6 +1,6 @@
 # Ignore frontend folders and virtual environment
-frontend/
 Master/frontend/
 env/
 Master/db.sqlite3
 Master/*.pyc
+test/
