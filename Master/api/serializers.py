@@ -6,7 +6,7 @@ class ChannelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Channel
         fields = ['id', 'esp_device', 'name', 'command']
-        read_only_fields = ['id']
+        # read_only_fields = ['id']
 
 class ESP32DeviceSerializer(serializers.ModelSerializer):
     class Meta:
