@@ -4,3 +4,4 @@ env/
 Master/db.sqlite3
 Master/*.pyc
 test/
+thenv/
