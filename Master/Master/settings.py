@@ -156,3 +156,9 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Set the time zone to Asia/Kolkata for Delhi
+TIME_ZONE = 'Asia/Kolkata'
+
+# Ensure that USE_TZ is set to True to handle timezone-aware datetime
+USE_TZ = True
