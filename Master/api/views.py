@@ -1,8 +1,8 @@
 # api/views.py
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .models import ESP32Device, Channel
-from .serializers import ESP32DeviceSerializer, ChannelSerializer, ChannelCreateSerializer
+from .models import ESP32Device, Channel, Alarm
+from .serializers import ESP32DeviceSerializer, ChannelSerializer, ChannelCreateSerializer, AlarmSerializer
 from rest_framework.permissions import AllowAny
 
 class ESP32DeviceListCreateView(generics.ListCreateAPIView):
@@ -40,4 +40,17 @@ class ChannelRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     """API to retrieve, update, or delete a specific channel."""
     queryset = Channel.objects.all()
     serializer_class = ChannelSerializer
+    permission_classes = [AllowAny]
+    
+class AlarmListCreateView(generics.ListCreateAPIView):
+    """API to list all alarms or create a new alarm."""
+    queryset = Alarm.objects.all()
+    serializer_class = AlarmSerializer
+    permission_classes = [AllowAny]
+
+
+class AlarmRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    """API to retrieve, update, or delete a specific alarm."""
+    queryset = Alarm.objects.all()
+    serializer_class = AlarmSerializer
     permission_classes = [AllowAny]
