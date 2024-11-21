@@ -5,7 +5,7 @@ from .models import ESP32Device, Channel, Alarm
 class ChannelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Channel
-        fields = ['id', 'esp_device', 'name', 'command']
+        fields = ['id', 'identification_id', 'esp_device', 'name', 'command', 'led_pin', 'input_pin']
         # read_only_fields = ['id']
 
 class ESP32DeviceSerializer(serializers.ModelSerializer):
