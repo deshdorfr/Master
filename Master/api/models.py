@@ -16,12 +16,18 @@ class Channel(models.Model):
     esp_device = models.ForeignKey(ESP32Device, related_name='channels', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)  # Name of the channel
     command = models.CharField(max_length=10, default="OFF")  # Command state (ON/OFF)
+    
+    # New fields
+    identification_id = models.IntegerField(null=True, blank=True)  # Optional unique identifier
+    led_pin = models.IntegerField(null=True, blank=True)  # Optional GPIO pin for LED
+    input_pin = models.IntegerField(null=True, blank=True)  # Optional GPIO pin for input signal
 
     class Meta:
         unique_together = ('esp_device', 'name')  # Ensure that each channel name is unique per ESP32
 
     def __str__(self):
         return f"{self.esp_device.name} - {self.name}: {self.command}"
+
     
 class Alarm(models.Model):
     """Model to store alarm information for channels."""

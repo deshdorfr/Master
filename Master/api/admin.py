@@ -13,7 +13,7 @@ class ESP32DeviceAdmin(admin.ModelAdmin):
 # Register Channel model
 @admin.register(Channel)
 class ChannelAdmin(admin.ModelAdmin):
-    list_display = ('esp_device', 'name', 'command')  # Display esp_device, name, and command
+    list_display = ('identification_id', 'esp_device', 'name', 'command', 'led_pin', 'input_pin')  # Display esp_device, name, and command
     search_fields = ('esp_device__name', 'name')  # Allow searching by device name or channel name
     list_filter = ('command',)  # Add filter options based on the 'command' field
     
