@@ -21,21 +21,27 @@ pin_config = {
 # Dictionary to store pin objects
 pins = {}
 
+# Initialize WiFi connection
 def connect_to_wifi():
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
     if not wlan.isconnected():
         print("Connecting to WiFi...")
         wlan.connect(SSID, PASSWORD)
+        start_time = time.ticks_ms()  # Record the start time
         while not wlan.isconnected():
-            time.sleep(1)
-            print("Waiting for connection...")
+            if time.ticks_diff(time.ticks_ms(), start_time) > 5000:  # Timeout after 10 seconds
+                print("WiFi connection failed. Retrying...")
+                return False
+            time.sleep(0.5)
     print("Connected to WiFi!")
     print("IP Address:", wlan.ifconfig()[0])
+    return True
 
+# Get API response with timeout handling
 def get_http_response():
     try:
-        response = urequests.get(API_URL)
+        response = urequests.get(API_URL, timeout=5)  # 5-second timeout
         if response.status_code == 200:
             return response.text
         else:
@@ -45,16 +51,17 @@ def get_http_response():
         print("HTTP request failed:", e)
         return ""
     finally:
-        response.close()
+        try:
+            response.close()
+        except:
+            pass
 
+# Control LEDs based on the API response
 def control_leds_from_api(response):
-    """
-    Controls LEDs based on the API response.
-    """
     try:
         data = ujson.loads(response)
         for channel in data:
-            identification_id = channel.get("identification_id")  # Use 'identification_id' from API response
+            identification_id = channel.get("identification_id")
             command = channel.get("command")  # Command (On/Off)
             if identification_id in pins:
                 led = pins[identification_id]["led"]
@@ -62,10 +69,8 @@ def control_leds_from_api(response):
     except ValueError as e:
         print("Error parsing JSON:", e)
 
+# Monitor input pins and control associated LEDs
 def monitor_input_pins():
-    """
-    Monitors input pins and controls associated LEDs.
-    """
     for pin_id, pin_set in pins.items():
         input_pin = pin_set["input"]
         led_pin = pin_set["led"]
@@ -86,20 +91,27 @@ def initialize_pins():
     print("Pins initialized:", pins)
 
 # Main code
-connect_to_wifi()
 initialize_pins()
-
+wifi_connected = connect_to_wifi()
 old_response_api = ""
+last_api_check = time.ticks_ms()
 
 while True:
-    # Handle API response
-    response = get_http_response()
-    if response and response != old_response_api:
-        print(f"API response changed: {response}")
-        old_response_api = response
-        control_leds_from_api(response)
-    
-    # Monitor input pins
+    # Reconnect WiFi if disconnected
+    if not wifi_connected:
+        print("Reconnecting to WiFi...")
+        wifi_connected = connect_to_wifi()
+
+    # Handle API response every 10 seconds
+    if wifi_connected and time.ticks_diff(time.ticks_ms(), last_api_check) > 5000:
+        response = get_http_response()
+        last_api_check = time.ticks_ms()  # Reset the API check timer
+        if response and response != old_response_api:
+            print(f"API response changed: {response}")
+            old_response_api = response
+            control_leds_from_api(response)
+
+    # Monitor input pins continuously
     monitor_input_pins()
 
-    time.sleep(0.1)  # General loop delay
+    time.sleep(0.1)  # Small delay for loop stability
