@@ -5,8 +5,8 @@ import ujson
 from machine import Pin
 
 # Replace with your WiFi credentials
-SSID = "Desh 4G"
-PASSWORD = "12345678"
+SSID = "Desh_jio_wifi"
+PASSWORD = "desh@123"
 
 # Define the API URL
 API_URL = "https://deshdeepak007.pythonanywhere.com/api/channels/14/"
